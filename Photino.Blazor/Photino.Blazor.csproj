@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<Authors>TryPhotino</Authors>
@@ -44,7 +44,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Photino.NET" Version="2.4.0" />
+	  <ProjectReference Include="..\..\photino.NET\Photino.NET\Photino.NET.csproj" />
 	</ItemGroup>
 
 </Project>
