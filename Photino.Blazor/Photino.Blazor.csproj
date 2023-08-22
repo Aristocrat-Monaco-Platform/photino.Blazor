@@ -11,7 +11,7 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/tryphotino/photino.Blazor</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/tryphotino/photino.Blazor</RepositoryUrl>
-		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;</TargetFrameworks>
 		<Title>Photino.blazor</Title>
 		<PackageIcon>photino.png</PackageIcon>
 	</PropertyGroup>
