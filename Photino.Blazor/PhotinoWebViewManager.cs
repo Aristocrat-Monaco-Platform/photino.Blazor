@@ -26,7 +26,7 @@ namespace Photino.Blazor
         // On Linux/Mac, we must use a custom scheme, because their webviews
         // don't have a way to intercept http:// scheme requests.
         public static readonly string BlazorAppScheme = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? "http"
+            ? "file"
             : "app";
 
         public static readonly string AppBaseUri = $"{BlazorAppScheme}://localhost/";
