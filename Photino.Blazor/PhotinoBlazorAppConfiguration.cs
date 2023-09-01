@@ -13,7 +13,7 @@ namespace Photino.Blazor
             ? "http"
             : "app";
 
-        public Uri AppBaseUri { get { return new Uri($"{AppScheme}://localhost/"); } }
+        public Uri AppBaseUri => new Uri($"{AppScheme}://localhost/");
 
         public string HostPage { get; set; }
     }
