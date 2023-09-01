@@ -1,18 +1,17 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using PhotinoNET;
-using System;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace Photino.Blazor
 {
@@ -20,22 +19,14 @@ namespace Photino.Blazor
     {
         private readonly PhotinoWindow _window;
         private readonly Channel<string> _channel;
-
-        // On Windows, we can't use a custom scheme to host the initial HTML,
-        // because webview2 won't let you do top-level navigation to such a URL.
-        // On Linux/Mac, we must use a custom scheme, because their webviews
-        // don't have a way to intercept http:// scheme requests.
-        public static readonly string BlazorAppScheme = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? "file"
-            : "app";
-
-        public static readonly string AppBaseUri = $"{BlazorAppScheme}://localhost/";
+        private readonly IOptions<PhotinoBlazorAppConfiguration> _config;
 
         public PhotinoWebViewManager(PhotinoWindow window, IServiceProvider provider, Dispatcher dispatcher,
             IFileProvider fileProvider, JSComponentConfigurationStore jsComponents, IOptions<PhotinoBlazorAppConfiguration> config)
             : base(provider, dispatcher, config.Value.AppBaseUri, fileProvider, jsComponents, config.Value.HostPage)
         {
             _window = window ?? throw new ArgumentNullException(nameof(window));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
 
             // Create a scheduler that uses one threads.
             var sts = new Utils.SynchronousTaskScheduler();
@@ -48,7 +39,7 @@ namespace Photino.Blazor
                     // TODO: Fix this. Photino should ideally tell us the URL that the message comes from so we
                     // know whether to trust it. Currently it's hardcoded to trust messages from any source, including
                     // if the webview is somehow navigated to an external URL.
-                    var messageOriginUrl = new Uri(AppBaseUri);
+                    var messageOriginUrl = config.Value.AppBaseUri;
 
                     MessageReceived(messageOriginUrl, (string)message!);
                 }, message, CancellationToken.None, TaskCreationOptions.DenyChildAttach, sts);
@@ -69,7 +60,7 @@ namespace Photino.Blazor
             //Remove parameters before attempting to retrieve the file. For example: http://localhost/_content/Blazorise/button.js?v=1.0.7.0
             if (url.Contains('?')) url = url.Substring(0, url.IndexOf('?'));
 
-            if (url.StartsWith(AppBaseUri, StringComparison.Ordinal)
+            if (url.StartsWith(_config.Value.AppBaseUri.OriginalString, StringComparison.Ordinal)
                 && TryGetResponseContent(url, !hasFileExtension, out var statusCode, out var statusMessage,
                     out var content, out var headers))
             {

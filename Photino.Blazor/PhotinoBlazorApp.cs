@@ -1,7 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using PhotinoNET;
 using System;
 using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using PhotinoNET;
 
 namespace Photino.Blazor
 {
@@ -16,6 +17,7 @@ namespace Photino.Blazor
         /// Gets configuration for the root components in the window.
         /// </summary>
         public BlazorWindowRootComponents RootComponents { get; private set; }
+        public PhotinoBlazorAppConfiguration Configuration { get; private set; }
 
         internal void Initialize(IServiceProvider services, RootComponentList rootComponents)
         {
@@ -23,6 +25,7 @@ namespace Photino.Blazor
             RootComponents = Services.GetService<BlazorWindowRootComponents>();
             MainWindow = Services.GetService<PhotinoWindow>();
             WindowManager = Services.GetService<PhotinoWebViewManager>();
+            Configuration = Services.GetService<IOptions<PhotinoBlazorAppConfiguration>>().Value;
 
             MainWindow
                 .SetTitle("Photino.Blazor App")
@@ -32,7 +35,7 @@ namespace Photino.Blazor
                 .SetLeft(450)
                 .SetTop(100);
 
-            MainWindow.RegisterCustomSchemeHandler(PhotinoWebViewManager.BlazorAppScheme, HandleWebRequest);
+            MainWindow.RegisterCustomSchemeHandler(Configuration.AppScheme, HandleWebRequest);
 
             foreach (var component in rootComponents)
             {
