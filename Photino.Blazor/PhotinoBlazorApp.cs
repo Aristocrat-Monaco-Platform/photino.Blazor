@@ -30,10 +30,10 @@ namespace Photino.Blazor
             MainWindow
                 .SetTitle("Photino.Blazor App")
                 .SetUseOsDefaultLocation(false)
-                .SetWidth(1000)
-                .SetHeight(900)
-                .SetLeft(450)
-                .SetTop(100);
+                .SetWidth(WindowConstants.DefaultWidth)
+                .SetHeight(WindowConstants.DefaultHeight)
+                .SetLeft(WindowConstants.DefaultLeft)
+                .SetTop(WindowConstants.DefaultTop);
 
             MainWindow.RegisterCustomSchemeHandler(Configuration.AppScheme, HandleWebRequest);
 
